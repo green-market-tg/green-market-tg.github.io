@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Horizontal Roulette</title>
+  <title>Looping Horizontal Roulette</title>
   <style>
     body {
       background: #111;
@@ -13,6 +13,7 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
+      margin: 0;
     }
 
     .roulette-container {
@@ -21,18 +22,31 @@
       height: 110px;
       overflow: hidden;
       border: 3px solid limegreen;
-      margin-bottom: 20px;
+    }
+
+    .marker {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 2px;
+      background: red;
+      transform: translateX(-1px);
+      z-index: 2;
     }
 
     .roulette-track {
       display: flex;
-      will-change: transform;
+      position: absolute;
+      top: 5px;
+      left: 0;
+      height: 100px;
     }
 
     .item {
       width: 100px;
       height: 100px;
-      margin: 5px;
+      margin: 0 5px;
       background: #333;
       border-radius: 12px;
       display: flex;
@@ -41,25 +55,14 @@
       font-size: 2rem;
     }
 
-    .marker {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 115px;
-      width: 100px;
-      border-left: 2px solid red;
-      border-right: 2px solid red;
-      pointer-events: none;
-    }
-
     button {
+      margin-top: 20px;
       padding: 10px 20px;
       background: limegreen;
-      color: #111;
       border: none;
-      border-radius: 5px;
       font-size: 1rem;
       cursor: pointer;
+      border-radius: 5px;
     }
 
     #result {
@@ -69,92 +72,85 @@
 </head>
 <body>
 
-  <div class="roulette-container">
-    <div class="marker"></div>
-    <div id="track" class="roulette-track"></div>
-  </div>
+<div class="roulette-container">
+  <div class="marker"></div>
+  <div id="track" class="roulette-track"></div>
+</div>
 
-  <button onclick="startSpin()">Spin</button>
-  <div id="result"></div>
+<button onclick="spin()">Spin</button>
+<div id="result"></div>
 
-  <script>
-    const items = ["🍎", "🍌", "🍇", "🍒", "🍋", "🥝", "🍍"];
-    const ITEM_WIDTH = 110;
-    const track = document.getElementById("track");
-    const result = document.getElementById("result");
+<script>
+  const items = ["🍋", "🍎", "🍌", "🍇", "🍒", "🥝", "🍍"];
+  const track = document.getElementById("track");
+  const ITEM_WIDTH = 110;
+  const centerOffset = (330 / 2) - (ITEM_WIDTH / 2); // Center of roulette
 
-    // Fill track with many repeated items
-    const LOOP_COUNT = 30;
-    for (let i = 0; i < LOOP_COUNT; i++) {
-      items.forEach(icon => {
-        const div = document.createElement("div");
-        div.className = "item";
-        div.textContent = icon;
-        track.appendChild(div);
-      });
-    }
+  // Fill enough repeated items to simulate looping
+  const LOOP_ITEMS = 100;
+  for (let i = 0; i < LOOP_ITEMS; i++) {
+    const item = document.createElement("div");
+    item.className = "item";
+    item.textContent = items[i % items.length];
+    track.appendChild(item);
+  }
 
-    let animationId;
-    let offset = 0;
-    let spinning = false;
+  let animation;
+  let offset = 0;
+  let spinning = false;
 
-    function startSpin() {
-      if (spinning) return;
-      spinning = true;
-      result.textContent = "";
-      offset = 0;
-      let speed = 10;
-      const maxLaps = 4;
-      let laps = 0;
+  function spin() {
+    if (spinning) return;
+    spinning = true;
+    document.getElementById("result").textContent = "";
 
-      function animate() {
-        offset -= speed;
-        if (Math.abs(offset) > track.scrollWidth / 3) {
-          offset = 0;
-          laps++;
-        }
-        track.style.transform = `translateX(${offset}px)`;
-        animationId = requestAnimationFrame(animate);
+    let speed = 20;
+    let decelerating = false;
 
-        if (laps >= maxLaps) {
-          cancelAnimationFrame(animationId);
-          slowDown(offset, speed);
-        }
+    function animate() {
+      offset -= speed;
+      track.style.transform = `translateX(${offset}px)`;
+
+      if (!decelerating && offset < -ITEM_WIDTH * 30) {
+        decelerating = true;
+        setTimeout(stopSpin, 1000);
       }
 
-      animate();
+      if (!decelerating) {
+        animation = requestAnimationFrame(animate);
+      }
     }
 
-    function slowDown(startOffset, startSpeed) {
-      let offset = startOffset;
-      let speed = startSpeed;
-      const decel = 0.2;
-      const interval = setInterval(() => {
+    function stopSpin() {
+      cancelAnimationFrame(animation);
+      let interval = setInterval(() => {
         offset -= speed;
-        speed -= decel;
-        if (speed <= 0.5) {
-          clearInterval(interval);
-          snapToCenter(offset);
-        }
         track.style.transform = `translateX(${offset}px)`;
+        speed *= 0.95;
+        if (speed <= 1) {
+          clearInterval(interval);
+          snapToItem();
+        }
       }, 16);
     }
 
-    function snapToCenter(finalOffset) {
-      const totalItems = items.length * LOOP_COUNT;
-      const centerX = 115 + 50; // marker left + half of item width
-      const nearestIndex = Math.round((-finalOffset + centerX) / ITEM_WIDTH);
-      const finalPosition = -(nearestIndex * ITEM_WIDTH - centerX);
+    function snapToItem() {
+      const index = Math.round((-offset + centerOffset) / ITEM_WIDTH);
+      const finalOffset = -(index * ITEM_WIDTH - centerOffset);
       track.style.transition = "transform 0.3s ease-out";
-      track.style.transform = `translateX(${finalPosition}px)`;
+      track.style.transform = `translateX(${finalOffset}px)`;
 
-      const rewardItem = track.children[nearestIndex % totalItems].textContent;
+      const selected = track.children[index].textContent;
       setTimeout(() => {
-        result.textContent = `🎉 You got: ${rewardItem}`;
+        document.getElementById("result").textContent = `🎉 You got: ${selected}`;
         track.style.transition = "";
         spinning = false;
       }, 300);
     }
-  </script>
+
+    animate();
+  }
+</script>
+
 </body>
 </html>
