@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Horizontal Roulette</title>
   <style>
     body {
       background: #111;
-      color: #fff;
+      color: white;
       font-family: sans-serif;
       display: flex;
       flex-direction: column;
@@ -15,10 +15,10 @@
       height: 100vh;
     }
 
-    .roulette-wrapper {
+    .roulette-container {
       position: relative;
-      width: 300px;
-      height: 100px;
+      width: 330px;
+      height: 110px;
       overflow: hidden;
       border: 3px solid limegreen;
       margin-bottom: 20px;
@@ -26,14 +26,14 @@
 
     .roulette-track {
       display: flex;
-      transition: transform 0.5s ease-out;
+      will-change: transform;
     }
 
     .item {
       width: 100px;
       height: 100px;
-      margin: 0 5px;
-      background: #444;
+      margin: 5px;
+      background: #333;
       border-radius: 12px;
       display: flex;
       align-items: center;
@@ -45,7 +45,7 @@
       position: absolute;
       top: 0;
       bottom: 0;
-      left: 100px;
+      left: 115px;
       width: 100px;
       border-left: 2px solid red;
       border-right: 2px solid red;
@@ -63,59 +63,98 @@
     }
 
     #result {
-      margin-top: 15px;
-      font-size: 1.2rem;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
 
-  <div class="roulette-wrapper">
+  <div class="roulette-container">
     <div class="marker"></div>
     <div id="track" class="roulette-track"></div>
   </div>
 
-  <button onclick="spin()">Spin</button>
+  <button onclick="startSpin()">Spin</button>
   <div id="result"></div>
 
   <script>
     const items = ["🍎", "🍌", "🍇", "🍒", "🍋", "🥝", "🍍"];
-    const track = document.getElementById('track');
-    const result = document.getElementById('result');
+    const ITEM_WIDTH = 110;
+    const track = document.getElementById("track");
+    const result = document.getElementById("result");
 
-    // Repeat items to simulate looping
-    const repeated = [...items, ...items, ...items];
-    repeated.forEach(i => {
-      const div = document.createElement('div');
-      div.className = 'item';
-      div.textContent = i;
-      track.appendChild(div);
-    });
+    // Fill track with many repeated items
+    const LOOP_COUNT = 30;
+    for (let i = 0; i < LOOP_COUNT; i++) {
+      items.forEach(icon => {
+        const div = document.createElement("div");
+        div.className = "item";
+        div.textContent = icon;
+        track.appendChild(div);
+      });
+    }
 
-    const ITEM_WIDTH = 110; // 100px + 2*5px margin
-    let currentPosition = 0;
+    let animationId;
+    let offset = 0;
+    let spinning = false;
 
-    function spin() {
-      const totalItems = repeated.length;
-      const centerIndex = Math.floor((300 / 2) / ITEM_WIDTH);
-      
-      // Choose random reward index from original items
-      const rewardIndex = Math.floor(Math.random() * items.length);
-      const offsetInTrack = items.length * 2 + rewardIndex; // Ensure it appears after some laps
+    function startSpin() {
+      if (spinning) return;
+      spinning = true;
+      result.textContent = "";
+      offset = 0;
+      let speed = 10;
+      const maxLaps = 4;
+      let laps = 0;
 
-      const targetPosition = -(offsetInTrack * ITEM_WIDTH - centerIndex * ITEM_WIDTH);
-      currentPosition = targetPosition;
+      function animate() {
+        offset -= speed;
+        if (Math.abs(offset) > track.scrollWidth / 3) {
+          offset = 0;
+          laps++;
+        }
+        track.style.transform = `translateX(${offset}px)`;
+        animationId = requestAnimationFrame(animate);
 
-      // Animate movement
-      track.style.transition = 'transform 3s cubic-bezier(0.25, 1, 0.5, 1)';
-      track.style.transform = `translateX(${targetPosition}px)`;
+        if (laps >= maxLaps) {
+          cancelAnimationFrame(animationId);
+          slowDown(offset, speed);
+        }
+      }
 
-      // Show result after animation
+      animate();
+    }
+
+    function slowDown(startOffset, startSpeed) {
+      let offset = startOffset;
+      let speed = startSpeed;
+      const decel = 0.2;
+      const interval = setInterval(() => {
+        offset -= speed;
+        speed -= decel;
+        if (speed <= 0.5) {
+          clearInterval(interval);
+          snapToCenter(offset);
+        }
+        track.style.transform = `translateX(${offset}px)`;
+      }, 16);
+    }
+
+    function snapToCenter(finalOffset) {
+      const totalItems = items.length * LOOP_COUNT;
+      const centerX = 115 + 50; // marker left + half of item width
+      const nearestIndex = Math.round((-finalOffset + centerX) / ITEM_WIDTH);
+      const finalPosition = -(nearestIndex * ITEM_WIDTH - centerX);
+      track.style.transition = "transform 0.3s ease-out";
+      track.style.transform = `translateX(${finalPosition}px)`;
+
+      const rewardItem = track.children[nearestIndex % totalItems].textContent;
       setTimeout(() => {
-        result.textContent = `🎉 You got: ${items[rewardIndex]}`;
-      }, 3100);
+        result.textContent = `🎉 You got: ${rewardItem}`;
+        track.style.transition = "";
+        spinning = false;
+      }, 300);
     }
   </script>
-
 </body>
 </html>
