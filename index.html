@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Smooth Infinite Roulette</title>
+  <title>Smooth Roulette</title>
   <style>
     body {
       background: #111;
@@ -38,16 +38,9 @@
     .roulette-track {
       display: flex;
       height: 100px;
-      animation: scroll 3s linear infinite;
-    }
-
-    @keyframes scroll {
-      0% {
-        transform: translateX(0);
-      }
-      100% {
-        transform: translateX(-50%);
-      }
+      position: absolute;
+      top: 5px;
+      left: 0;
     }
 
     .item {
@@ -90,47 +83,78 @@
 
 <script>
   const items = ["🍋", "🍎", "🍌", "🍇", "🍒", "🥝", "🍍"];
-  const track = document.getElementById("track");
   const ITEM_WIDTH = 110;
-  const containerWidth = 330;
-  const centerOffset = (containerWidth / 2) - (ITEM_WIDTH / 2);
+  const centerOffset = (330 / 2) - (ITEM_WIDTH / 2);
+  const track = document.getElementById("track");
 
-  // Duplicate enough items to loop smoothly
-  const LOOP = 20;
-  const allItems = [];
-  for (let i = 0; i < LOOP; i++) {
-    for (let emoji of items) {
-      const item = document.createElement("div");
-      item.className = "item";
-      item.textContent = emoji;
-      track.appendChild(item);
-      allItems.push(item);
-    }
+  // Fill track with repeating items
+  const TOTAL_ITEMS = 100;
+  for (let i = 0; i < TOTAL_ITEMS; i++) {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.textContent = items[i % items.length];
+    track.appendChild(div);
   }
 
+  let offset = 0;
+  let speed = 2;
   let spinning = false;
+  let animationFrame;
+
+  function loop() {
+    offset -= speed;
+    track.style.transform = `translateX(${offset}px)`;
+    // Loop logic
+    if (Math.abs(offset) >= track.scrollWidth / 2) {
+      offset = 0;
+    }
+    animationFrame = requestAnimationFrame(loop);
+  }
+
+  // Start infinite loop
+  loop();
 
   function spin() {
     if (spinning) return;
     spinning = true;
-    document.getElementById("result").textContent = "";
+    cancelAnimationFrame(animationFrame);
 
-    // Stop animation
-    track.style.animationPlayState = "paused";
+    // Speed up slightly, then decelerate
+    speed = 25;
+    let decelerateTimer = setTimeout(() => {
+      let interval = setInterval(() => {
+        speed *= 0.95;
+        offset -= speed;
+        track.style.transform = `translateX(${offset}px)`;
 
-    // Calculate a final stop position (simulate randomness)
-    const visibleItems = allItems.length;
-    const winningIndex = Math.floor(Math.random() * visibleItems);
-    const finalOffset = -(winningIndex * ITEM_WIDTH - centerOffset);
+        if (speed <= 0.5) {
+          clearInterval(interval);
+          snapToItem();
+        }
+      }, 16);
+    }, 1000);
 
-    track.style.transition = "transform 2s ease-out";
+    animationFrame = requestAnimationFrame(function animate() {
+      offset -= speed;
+      track.style.transform = `translateX(${offset}px)`;
+      animationFrame = requestAnimationFrame(animate);
+    });
+  }
+
+  function snapToItem() {
+    const index = Math.round((-offset + centerOffset) / ITEM_WIDTH);
+    const finalOffset = -(index * ITEM_WIDTH - centerOffset);
+    track.style.transition = "transform 0.3s ease-out";
     track.style.transform = `translateX(${finalOffset}px)`;
 
-    const selected = allItems[winningIndex].textContent;
+    const selected = track.children[index]?.textContent || "❓";
     setTimeout(() => {
       document.getElementById("result").textContent = `🎉 You got: ${selected}`;
+      track.style.transition = "";
       spinning = false;
-    }, 2000);
+      // Resume loop
+      animationFrame = requestAnimationFrame(loop);
+    }, 300);
   }
 </script>
 
