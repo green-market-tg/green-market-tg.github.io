@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Looping Roulette</title>
+  <title>Smooth Roulette</title>
   <style>
     body {
       background: #111;
@@ -41,6 +41,7 @@
       position: absolute;
       top: 5px;
       left: 0;
+      will-change: transform;
     }
 
     .item {
@@ -85,22 +86,19 @@
   const items = ["🍋", "🍎", "🍌", "🍇", "🍒", "🥝", "🍍"];
   const track = document.getElementById("track");
   const ITEM_WIDTH = 110;
-  const CENTER_OFFSET = (330 / 2) - (ITEM_WIDTH / 2);
+  const CENTER_OFFSET = 330 / 2 - ITEM_WIDTH / 2;
+  const REPEAT_COUNT = 30;
+  let offset = 0;
+  let animation;
+  let spinning = false;
 
-  const visibleItems = 7;
-  const totalRepeats = 20;
-
-  // Populate with repeated items
-  for (let i = 0; i < items.length * totalRepeats; i++) {
+  // Fill items multiple times
+  for (let i = 0; i < REPEAT_COUNT * items.length; i++) {
     const div = document.createElement("div");
     div.className = "item";
     div.textContent = items[i % items.length];
     track.appendChild(div);
   }
-
-  let offset = 0;
-  let spinning = false;
-  let animationFrame;
 
   function spin() {
     if (spinning) return;
@@ -108,64 +106,60 @@
     document.getElementById("result").textContent = "";
 
     let speed = 20;
-    let slowDown = false;
-    let targetIndex;
+    const maxOffset = track.scrollWidth / 2;
 
-    // Pick a random reward
-    const rewardSymbol = items[Math.floor(Math.random() * items.length)];
+    const reward = items[Math.floor(Math.random() * items.length)];
 
-    function update() {
+    function loopScroll() {
       offset -= speed;
-      if (Math.abs(offset) >= track.scrollWidth / 2) {
-        offset = 0; // Loop seamlessly
+      if (Math.abs(offset) >= maxOffset) {
+        offset = 0; // seamless loop
       }
-
       track.style.transform = `translateX(${offset}px)`;
 
-      if (!slowDown && Math.abs(offset) > 2000) {
-        slowDown = true;
-        setTimeout(() => stopSpin(rewardSymbol), 1000);
-      }
-
-      if (!slowDown) {
-        animationFrame = requestAnimationFrame(update);
-      }
+      animation = requestAnimationFrame(loopScroll);
     }
 
-    function stopSpin(symbol) {
-      cancelAnimationFrame(animationFrame);
+    function stopSpin() {
+      cancelAnimationFrame(animation);
 
-      // Find nearest symbol match that will land center
+      // Find closest match ahead
       const children = [...track.children];
-      const centerX = Math.abs(offset) + CENTER_OFFSET;
+      const currentX = -offset + CENTER_OFFSET;
+      const matches = children.map((el, i) => ({
+        index: i,
+        symbol: el.textContent,
+        pos: i * ITEM_WIDTH
+      })).filter(el => el.symbol === reward && el.pos > currentX);
 
-      // Find matching symbols ahead of current scroll
-      const candidates = children
-        .map((el, i) => ({ el, i, left: i * ITEM_WIDTH }))
-        .filter(e => e.el.textContent === symbol && e.left > centerX);
+      const target = matches[0];
+      if (!target) return;
 
-      const chosen = candidates[0];
-      if (!chosen) return;
+      const finalOffset = -(target.pos - CENTER_OFFSET);
+      const distance = finalOffset - offset;
+      let frame = 0;
+      const frames = 60;
 
-      const distance = chosen.left - centerX;
-      const steps = 30;
-      let current = 0;
-
-      const interval = setInterval(() => {
-        const progress = current / steps;
-        const ease = 1 - Math.pow(1 - progress, 3); // easeOutCubic
-        track.style.transform = `translateX(${-(centerX + distance * ease)}px)`;
-        current++;
-        if (current > steps) {
-          clearInterval(interval);
-          offset = -(chosen.left - CENTER_OFFSET);
-          document.getElementById("result").textContent = `🎉 You got: ${symbol}`;
+      const decelerate = () => {
+        frame++;
+        const t = frame / frames;
+        const easeOut = 1 - Math.pow(1 - t, 3);
+        const pos = offset + distance * easeOut;
+        track.style.transform = `translateX(${pos}px)`;
+        if (frame < frames) {
+          requestAnimationFrame(decelerate);
+        } else {
+          offset = finalOffset;
           spinning = false;
+          document.getElementById("result").textContent = `🎉 You got: ${reward}`;
         }
-      }, 16);
+      };
+
+      decelerate();
     }
 
-    update();
+    loopScroll();
+    setTimeout(stopSpin, 3000); // spin duration
   }
 </script>
 
