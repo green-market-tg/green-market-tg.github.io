@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Right-to-Left Only Roulette</title>
+  <title>Looping Roulette</title>
   <style>
     body {
       background: #111;
@@ -83,67 +83,89 @@
 
 <script>
   const items = ["🍋", "🍎", "🍌", "🍇", "🍒", "🥝", "🍍"];
+  const track = document.getElementById("track");
   const ITEM_WIDTH = 110;
   const CENTER_OFFSET = (330 / 2) - (ITEM_WIDTH / 2);
-  const track = document.getElementById("track");
 
-  const REPEAT = 50;
-  for (let i = 0; i < items.length * REPEAT; i++) {
+  const visibleItems = 7;
+  const totalRepeats = 20;
+
+  // Populate with repeated items
+  for (let i = 0; i < items.length * totalRepeats; i++) {
     const div = document.createElement("div");
     div.className = "item";
     div.textContent = items[i % items.length];
     track.appendChild(div);
   }
 
-  let currentOffset = 0;
+  let offset = 0;
   let spinning = false;
+  let animationFrame;
 
   function spin() {
     if (spinning) return;
     spinning = true;
     document.getElementById("result").textContent = "";
 
-    const totalItems = track.children.length;
-    const centerIndex = Math.floor(totalItems / 2);
-    const randomOffset = Math.floor(Math.random() * items.length);
-    const targetIndex = centerIndex + randomOffset;
+    let speed = 20;
+    let slowDown = false;
+    let targetIndex;
 
-    const targetPosition = -(targetIndex * ITEM_WIDTH - CENTER_OFFSET);
+    // Pick a random reward
+    const rewardSymbol = items[Math.floor(Math.random() * items.length)];
 
-    let speed = 40;
-    let decelerating = false;
-
-    function animate() {
-      currentOffset -= speed;
-      track.style.transform = `translateX(${currentOffset}px)`;
-
-      // Start decelerating after enough scroll
-      if (!decelerating && currentOffset < targetPosition - 1000) {
-        decelerating = true;
+    function update() {
+      offset -= speed;
+      if (Math.abs(offset) >= track.scrollWidth / 2) {
+        offset = 0; // Loop seamlessly
       }
 
-      if (decelerating) {
-        speed *= 0.97;
-        if (speed <= 1.5) {
-          // Final alignment
-          const finalOffset = targetPosition;
-          track.style.transition = "transform 0.4s ease-out";
-          track.style.transform = `translateX(${finalOffset}px)`;
-          setTimeout(() => {
-            const selected = track.children[targetIndex].textContent;
-            document.getElementById("result").textContent = `🎉 You got: ${selected}`;
-            currentOffset = finalOffset;
-            track.style.transition = "";
-            spinning = false;
-          }, 400);
-          return;
-        }
+      track.style.transform = `translateX(${offset}px)`;
+
+      if (!slowDown && Math.abs(offset) > 2000) {
+        slowDown = true;
+        setTimeout(() => stopSpin(rewardSymbol), 1000);
       }
 
-      requestAnimationFrame(animate);
+      if (!slowDown) {
+        animationFrame = requestAnimationFrame(update);
+      }
     }
 
-    animate();
+    function stopSpin(symbol) {
+      cancelAnimationFrame(animationFrame);
+
+      // Find nearest symbol match that will land center
+      const children = [...track.children];
+      const centerX = Math.abs(offset) + CENTER_OFFSET;
+
+      // Find matching symbols ahead of current scroll
+      const candidates = children
+        .map((el, i) => ({ el, i, left: i * ITEM_WIDTH }))
+        .filter(e => e.el.textContent === symbol && e.left > centerX);
+
+      const chosen = candidates[0];
+      if (!chosen) return;
+
+      const distance = chosen.left - centerX;
+      const steps = 30;
+      let current = 0;
+
+      const interval = setInterval(() => {
+        const progress = current / steps;
+        const ease = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+        track.style.transform = `translateX(${-(centerX + distance * ease)}px)`;
+        current++;
+        if (current > steps) {
+          clearInterval(interval);
+          offset = -(chosen.left - CENTER_OFFSET);
+          document.getElementById("result").textContent = `🎉 You got: ${symbol}`;
+          spinning = false;
+        }
+      }, 16);
+    }
+
+    update();
   }
 </script>
 
