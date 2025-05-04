@@ -41,6 +41,7 @@
       position: absolute;
       top: 5px;
       left: 0;
+      transition: transform 0.3s ease-out;
     }
 
     .item {
@@ -83,77 +84,57 @@
 
 <script>
   const items = ["🍋", "🍎", "🍌", "🍇", "🍒", "🥝", "🍍"];
-  const ITEM_WIDTH = 110;
-  const centerOffset = (330 / 2) - (ITEM_WIDTH / 2);
+  const ITEM_WIDTH = 110; // 100 + 2*5 margin
+  const CENTER_OFFSET = (330 / 2) - (ITEM_WIDTH / 2);
+  const REPEAT = 50;
   const track = document.getElementById("track");
 
-  // Duplicate items for smooth looping
-  const TOTAL_ITEMS = 200;
-  for (let i = 0; i < TOTAL_ITEMS; i++) {
+  // Create enough items to simulate infinite loop
+  for (let i = 0; i < items.length * REPEAT; i++) {
     const div = document.createElement("div");
     div.className = "item";
     div.textContent = items[i % items.length];
     track.appendChild(div);
   }
 
-  let offset = 0;
-  let speed = 2;
+  let currentOffset = 0;
   let spinning = false;
-  let animationFrame;
-
-  // Idle loop (background movement)
-  function idleLoop() {
-    offset -= 0.5;
-    if (Math.abs(offset) > track.scrollWidth / 2) {
-      offset = 0;
-    }
-    track.style.transform = `translateX(${offset}px)`;
-    animationFrame = requestAnimationFrame(idleLoop);
-  }
-
-  idleLoop();
 
   function spin() {
     if (spinning) return;
     spinning = true;
-    cancelAnimationFrame(animationFrame);
+    document.getElementById("result").textContent = "";
 
-    // Choose random target index in visible range (e.g. 40–60)
-    const minIndex = 40;
-    const maxIndex = 60;
-    const targetIndex = Math.floor(Math.random() * (maxIndex - minIndex + 1)) + minIndex;
-    const finalOffset = -(targetIndex * ITEM_WIDTH - centerOffset);
+    // Pick a target index somewhere in the middle
+    const centerIndex = Math.floor((track.children.length / 2));
+    const targetItemIndex = centerIndex + Math.floor(Math.random() * items.length);
+    const finalOffset = -(targetItemIndex * ITEM_WIDTH - CENTER_OFFSET);
 
-    let currentOffset = offset;
-    let velocity = 30;
+    // Start with a high offset to simulate acceleration
+    let speed = 60;
 
-    function animateSpin() {
-      currentOffset -= velocity;
-      velocity *= 0.97;
-
-      track.style.transform = `translateX(${currentOffset}px)`;
-
-      if (velocity < 1) {
-        cancelAnimationFrame(animationFrame);
-        // Snap exactly
+    function animate() {
+      if (speed > 2) {
+        currentOffset -= speed;
+        track.style.transform = `translateX(${currentOffset}px)`;
+        speed *= 0.97;
+        requestAnimationFrame(animate);
+      } else {
+        // Snap to final selected item
         track.style.transition = "transform 0.4s ease-out";
         track.style.transform = `translateX(${finalOffset}px)`;
 
-        const selected = track.children[targetIndex]?.textContent || "❓";
-
         setTimeout(() => {
+          const selected = track.children[targetItemIndex].textContent;
           document.getElementById("result").textContent = `🎉 You got: ${selected}`;
+          currentOffset = finalOffset;
           track.style.transition = "";
-          offset = finalOffset;
           spinning = false;
-          idleLoop(); // Resume idle movement
         }, 400);
-      } else {
-        animationFrame = requestAnimationFrame(animateSpin);
       }
     }
 
-    animationFrame = requestAnimationFrame(animateSpin);
+    animate();
   }
 </script>
 
