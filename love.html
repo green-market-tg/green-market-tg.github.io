@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Proposal</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background: #f0f0f0;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      transition: background 1s, color 1s;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background-color: #ff3366;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    #moddagoodu {
+      display: none;
+      font-size: 2.5em;
+      color: white;
+      opacity: 0;
+      transition: opacity 2s;
+      position: absolute;
+    }
+
+    .dark {
+      background: black;
+      color: white;
+    }
+
+    .show {
+      display: block;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <h1>Click Below Button To Propose Me!</h1>
+  <button onclick="propose()">I Love You!</button>
+  <div id="moddagoodu">Moddagoodu</div>
+
+  <script>
+    function propose() {
+      document.body.classList.add('dark');
+      document.querySelector('h1').style.display = 'none';
+      document.querySelector('button').style.display = 'none';
+
+      const message = document.getElementById('moddagoodu');
+      message.style.display = 'block';
+      setTimeout(() => {
+        message.classList.add('show');
+      }, 300);
+    }
+  </script>
+</body>
+</html>
