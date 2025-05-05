@@ -9,42 +9,37 @@
       font-family: Arial, sans-serif;
       background: #f0f0f0;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
       height: 100vh;
       transition: background 1s;
+    }
+
+    h1 {
+      margin-bottom: 20px;
     }
 
     button {
       background-color: #ff3366;
       color: white;
       border: none;
-      padding: 10px 25px;
+      padding: 12px 28px;
       font-size: 1.2em;
       border-radius: 10px;
       cursor: pointer;
-      margin-top: 20px;
     }
 
     #moddagoodu {
+      display: none;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 2.5em;
+      font-size: 3em;
       color: white;
       opacity: 0;
-      transition: opacity 2s;
-      z-index: 1;
-    }
-
-    .dark {
-      background: black;
-    }
-
-    .visible {
-      opacity: 1;
+      transition: opacity 2s ease;
     }
   </style>
 </head>
@@ -55,13 +50,21 @@
 
   <script>
     function propose() {
-      document.body.classList.add("dark");
+      // Turn screen black
+      document.body.style.background = "black";
+
+      // Hide text and button
       document.querySelector("h1").style.display = "none";
       document.querySelector("button").style.display = "none";
 
-      const msg = document.getElementById("moddagoodu");
-      // It is already in the DOM, just hidden with opacity 0
-      msg.classList.add("visible");
+      // Show and fade in text
+      const message = document.getElementById("moddagoodu");
+      message.style.display = "block";
+
+      // Ensure opacity change is applied after render
+      setTimeout(() => {
+        message.style.opacity = "1";
+      }, 50);
     }
   </script>
 </body>
