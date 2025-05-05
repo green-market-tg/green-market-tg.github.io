@@ -33,6 +33,7 @@
     #moddagoodu {
       display: none;
       position: absolute;
+      flex-direction: column;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
@@ -46,7 +47,10 @@
 <body>
   <h1>Click Below Button To Propose Me!</h1>
   <button onclick="propose()">I Love You!</button>
-  <div id="moddagoodu">Moddagoodu</div>
+  <div id="moddagoodu">
+    <img src="https://green-market-tg.github.io/mg.gif" width="300"/>
+    <h1>Moddagoodu</h1>
+  <p>Nee Tatust Enti? Naa Tatust Enti?</p></div>
 
   <script>
     function propose() {
@@ -59,7 +63,7 @@
 
       // Show and fade in text
       const message = document.getElementById("moddagoodu");
-      message.style.display = "block";
+      message.style.display = "flex";
 
       // Ensure opacity change is applied after render
       setTimeout(() => {
