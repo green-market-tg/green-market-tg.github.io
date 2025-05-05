@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <title>Proposal</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: 'Arial', sans-serif;
@@ -15,6 +19,7 @@
       justify-content: center;
       height: 100vh;
       transition: background 1s, color 1s;
+      overflow: hidden;
     }
 
     h1 {
@@ -38,12 +43,15 @@
     }
 
     #moddagoodu {
-      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       font-size: 2.5em;
       color: white;
       opacity: 0;
-      transition: opacity 2s;
-      position: absolute;
+      transition: opacity 2s ease;
+      pointer-events: none;
     }
 
     .dark {
@@ -52,7 +60,6 @@
     }
 
     .show {
-      display: block;
       opacity: 1;
     }
   </style>
@@ -65,14 +72,13 @@
   <script>
     function propose() {
       document.body.classList.add('dark');
-      document.querySelector('h1').style.display = 'none';
-      document.querySelector('button').style.display = 'none';
+      document.querySelector('h1').remove();
+      document.querySelector('button').remove();
 
       const message = document.getElementById('moddagoodu');
-      message.style.display = 'block';
-      setTimeout(() => {
-        message.classList.add('show');
-      }, 300);
+      // Force reflow to apply transition
+      void message.offsetWidth;
+      message.classList.add('show');
     }
   </script>
 </body>
