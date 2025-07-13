@@ -2,16 +2,189 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Our Special Journey 🌸</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hey Cutie 💖</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(to top right, #ffe6f0, #ff9aa2);
+      font-family: 'Segoe UI', cursive;
+      overflow: hidden;
+      height: 100vh;
+      color: #fff;
+    }
+
+    .container {
+      padding: 20px;
+      text-align: center;
+      z-index: 10;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-top: 30px;
+      color: #ff4d88;
+    }
+
+    #typewriter {
+      font-size: 1.1rem;
+      margin: 20px auto;
+      max-width: 90%;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      border-right: 2px solid #fff;
+      overflow-wrap: break-word;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { border-color: transparent; }
+      50% { border-color: white; }
+    }
+
+    .love-gif {
+      width: 200px;
+      margin: 20px auto;
+      border-radius: 16px;
+      box-shadow: 0 0 10px #fff4f8;
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .btn {
+      margin-top: 20px;
+      background-color: #ff5e7e;
+      border: none;
+      padding: 15px 25px;
+      font-size: 1.2rem;
+      border-radius: 30px;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 0 10px #ffb6c1;
+    }
+
+    .btn:hover {
+      background-color: #ff3366;
+    }
+
+    #final {
+      display: none;
+      font-size: 1.4rem;
+      margin-top: 20px;
+    }
+
+    /* Hearts floating */
+    .hearts-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 1.2rem;
+      animation: float 6s infinite ease-in-out;
+      color: rgba(255, 105, 180, 0.7);
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
 </head>
-<body class="centered">
-  <h1>Hi Cutie 💕</h1>
-  <p>Wanna go on a little journey with me? 🥺👉👈</p>
-  <button onclick="nextPage('story.html')">Start the Journey 🚀</button>
+<body>
+
   <audio autoplay loop>
     <source src="bg-music.mp3" type="audio/mp3">
   </audio>
-  <script src="script.js"></script>
+
+  <div class="hearts-container" id="hearts"></div>
+
+  <div class="container">
+    <h1>Hey Beautiful 💕</h1>
+
+    <div id="typewriter"></div>
+
+    <img class="love-gif" src="love-you.gif" alt="Love You GIF">
+
+    <button class="btn" onclick="startJourney()">Start Our Journey 💍</button>
+
+    <div id="final">You said YES! 🥹💕 Let’s begin our forever 💫</div>
+  </div>
+
+  <script>
+    const text = `I might not be a poet, but every heartbeat of mine writes your name. 💖
+You're the glitch in my system that I never want to fix.
+Every time you smile, it feels like the whole world pauses... just to admire you.
+You’re not just beautiful — you're breathtaking.
+If I had a line of code for every time I thought of you, I’d have built the universe by now 🥺
+
+So here I am... heart open, soul smiling, asking one simple thing...
+Will you start our forever with me? 💌`;
+
+    let i = 0;
+    function typeWriter() {
+      if (i < text.length) {
+        document.getElementById("typewriter").innerHTML += text.charAt(i);
+        i++;
+        setTimeout(typeWriter, 40);
+      }
+    }
+    typeWriter();
+
+    function startJourney() {
+      document.querySelector('.btn').style.display = 'none';
+      document.getElementById('final').style.display = 'block';
+
+      for (let i = 0; i < 50; i++) {
+        const sparkle = document.createElement("div");
+        sparkle.innerText = "✨";
+        sparkle.style.position = "absolute";
+        sparkle.style.left = Math.random() * 100 + "vw";
+        sparkle.style.top = Math.random() * 100 + "vh";
+        sparkle.style.fontSize = 1 + Math.random() * 2 + "rem";
+        sparkle.style.opacity = 1;
+        sparkle.style.transition = "all 2s ease";
+        document.body.appendChild(sparkle);
+        setTimeout(() => sparkle.style.top = "-100px", 100);
+      }
+    }
+
+    // Floating hearts
+    const heartEmojis = ["💖", "💕", "💘", "❤️", "💓"];
+    for (let i = 0; i < 80; i++) {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerText = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = (4 + Math.random() * 4) + "s";
+      heart.style.fontSize = (1 + Math.random() * 1.5) + "rem";
+      heart.style.opacity = Math.random();
+      heart.style.animationDelay = Math.random() * 5 + "s";
+      document.getElementById("hearts").appendChild(heart);
+    }
+  </script>
+
 </body>
 </html>
