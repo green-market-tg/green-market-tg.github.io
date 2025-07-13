@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>For My Crush 💘</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #ffdde1, #ee9ca7);
+      color: #fff;
+      height: 100vh;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 2rem;
+      color: rgba(255, 105, 180, 0.8);
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(1) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) scale(1.5) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      animation: fadeIn 2s ease;
+    }
+
+    #typewriter {
+      font-size: 1.4rem;
+      width: 80%;
+      max-width: 800px;
+      margin: 0 auto;
+      white-space: pre-wrap;
+      border-right: 3px solid #fff;
+      animation: typing 5s steps(50) 1 forwards, blink 0.8s infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    @keyframes blink {
+      0%, 100% { border-color: transparent }
+      50% { border-color: white }
+    }
+
+    .love-gif {
+      margin-top: 30px;
+      max-width: 300px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px #fff5f8;
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .btn {
+      margin-top: 40px;
+      background: #ff5e7e;
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.4rem;
+      border-radius: 40px;
+      cursor: pointer;
+      box-shadow: 0 0 20px #ffb6c1;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #ff3366;
+      transform: scale(1.1);
+    }
+
+    #final {
+      display: none;
+      font-size: 2rem;
+      margin-top: 30px;
+      animation: fadeIn 2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <audio autoplay loop>
+    <source src="bg-music.mp3" type="audio/mp3">
+  </audio>
+
+  <div class="container">
+    <h1>Hey Beautiful 💖</h1>
+    <div id="typewriter"></div>
+
+    <img class="love-gif" src="love-you.gif" alt="Love You">
+
+    <br>
+    <button class="btn" onclick="startJourney()">Start Our Journey 💍</button>
+    <div id="final">You said YES! Our forever starts now 💫💘</div>
+  </div>
+
+  <script>
+    const para = `I don’t need a programming language to tell you that you’re my favorite function. 
+    You’re like the main() of my life – everything starts with you. 
+    From the moment I saw you, the entire world blurred out like a shallow depth of field. 
+    You are my constant, my forever import, the only bug I’d never fix. 
+    Every time I see you, I get a runtime error in my chest because my heart skips a beat. 
+    I don’t want to console.log my feelings... I want to broadcast them to the whole world. 
+    You're the most beautiful string I've ever parsed. 💘
+    
+    So… Will you be the one to write the next chapter of life with me? A chapter filled with cuddles, coffee, code, and crazy love? 🥺`;
+
+    let i = 0;
+    const speed = 25;
+    const typeDiv = document.getElementById("typewriter");
+
+    function typeWriter() {
+      if (i < para.length) {
+        typeDiv.innerHTML += para.charAt(i);
+        i++;
+        setTimeout(typeWriter, speed);
+      }
+    }
+
+    typeWriter();
+
+    // Generate fluttering hearts
+    const emojis = ["💖", "💘", "❤️", "💕", "💞", "💓"];
+    for (let i = 0; i < 100; i++) {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = 4 + Math.random() * 6 + "s";
+      heart.style.fontSize = 1 + Math.random() * 2 + "rem";
+      heart.style.opacity = Math.random();
+      heart.style.animationDelay = Math.random() * 5 + "s";
+      document.body.appendChild(heart);
+    }
+
+    function startJourney() {
+      document.querySelector('.btn').style.display = 'none';
+      document.getElementById('final').style.display = 'block';
+
+      // CONFETTI EFFECT (optional if you add a library)
+      for (let i = 0; i < 100; i++) {
+        const sparkle = document.createElement("div");
+        sparkle.innerText = "✨";
+        sparkle.style.position = "absolute";
+        sparkle.style.left = Math.random() * 100 + "vw";
+        sparkle.style.top = Math.random() * 100 + "vh";
+        sparkle.style.fontSize = 1 + Math.random() * 2 + "rem";
+        sparkle.style.opacity = 1;
+        sparkle.style.transition = "all 2s ease";
+        document.body.appendChild(sparkle);
+        setTimeout(() => sparkle.style.top = "-100px", 100);
+      }
+    }
+  </script>
+
+</body>
+</html>
