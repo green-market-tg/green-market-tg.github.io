@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Just For You 💖</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Segoe UI', cursive;
+      background: radial-gradient(circle, #ffe6f0, #ffc0cb);
+      color: #fff;
+      text-align: center;
+      position: relative;
+    }
+
+    h1 {
+      margin-top: 50px;
+      font-size: 3rem;
+      color: #ff4d88;
+      animation: fadeIn 2s ease;
+    }
+
+    p {
+      max-width: 800px;
+      margin: 40px auto;
+      font-size: 1.4rem;
+      color: #fff0f5;
+      line-height: 1.8;
+      padding: 0 20px;
+      animation: fadeIn 3s ease-in-out;
+    }
+
+    .love-gif {
+      margin-top: 30px;
+      max-width: 300px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px #ffb6c1;
+      animation: pop 2s infinite ease-in-out;
+    }
+
+    .hearts-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .heart {
+      position: absolute;
+      color: #ff69b4;
+      font-size: 2rem;
+      opacity: 0.3;
+      animation: floatUp 8s infinite ease-in-out;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes pop {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 30px;
+      width: 100%;
+      font-size: 1.6rem;
+      color: #fff;
+      font-weight: bold;
+      animation: fadeIn 5s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hearts-container" id="hearts"></div>
+
+  <h1>My Dearest... 💗</h1>
+
+  <p>
+    I don't know how to say this without sounding like a total simp, but every time you smile, my brain forgets how to function. 
+    It's like you're coded in HTML, but styled in CSS sent straight from heaven. You're not just my type, you're my entire stylesheet. 
+    I scroll through memories of us like a long webpage I never want to reach the bottom of. Your laughter? It’s my favorite sound loop. 
+    Your eyes? They have more sparkle than a thousand shimmering gradients. Every day with you feels like a beautiful `div` wrapped in love.
+    I could never cache how much I adore you because every moment with you is a dynamic update to my heart.  
+    So here's my bold tag, italic feelings, and center-aligned soul — ready to love you with no closing tag.  
+    Wanna start this new journey with me? Let’s build a love that’s full stack — forever 🥺💞
+  </p>
+
+  <img class="love-gif" src="love-you.gif" alt="I Love You ❤️">
+
+  <div class="footer">
+    Let’s Start Our New Life Together 💍✨
+  </div>
+
+  <script>
+    const hearts = document.getElementById("hearts");
+    const heartEmojis = ["💖", "💘", "❤️", "💕", "💞", "💓", "🩷"];
+
+    for (let i = 0; i < 100; i++) {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.innerText = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.top = Math.random() * 100 + "vh";
+      heart.style.opacity = Math.random().toFixed(2);
+      heart.style.fontSize = 1 + Math.random() * 3 + "rem";
+      heart.style.animationDuration = 5 + Math.random() * 10 + "s";
+      heart.style.transform = `rotate(${Math.random() * 360}deg)`;
+      hearts.appendChild(heart);
+    }
+  </script>
+
+</body>
+</html>
