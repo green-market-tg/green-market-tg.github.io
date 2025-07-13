@@ -10,7 +10,7 @@
     body {
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to top right, #ffe6f0, #ffffff);
-      overflow: hidden;
+      overflow-x: hidden;
       color: #222;
       text-align: center;
       padding: 20px;
@@ -19,6 +19,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      overflow-y: auto;
     }
 
     h1 {
@@ -136,9 +137,9 @@
     h.className = "heart";
     h.innerText = hearts[Math.floor(Math.random() * hearts.length)];
     h.style.left = Math.random() * 100 + "vw";
-    h.style.animationDuration = (8 + Math.random() * 6) + "s";
+    h.style.animationDuration = (6 + Math.random() * 6) + "s";
     h.style.fontSize = (1 + Math.random() * 1.5) + "rem";
-    h.style.animationDelay = Math.random() * 5 + "s";
+    h.style.animationDelay = Math.random() * 7 + "s";
     container.appendChild(h);
   }
 </script>
