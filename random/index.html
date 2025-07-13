@@ -3,138 +3,143 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Catch My Love 💘</title>
+  <title>My Love for You 💖</title>
   <style>
-    * {margin: 0; padding: 0; box-sizing: border-box;}
-    html, body {
-      width: 100%; height: 100%;
-      overflow: hidden;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
       font-family: 'Segoe UI', sans-serif;
-      background: radial-gradient(circle at center, #1d2b64, #f8cdda);
-      color: white;
+      background: linear-gradient(to top right, #ffe6f0, #ffffff);
+      overflow: hidden;
+      color: #222;
+      text-align: center;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
-    .game-container {
-      position: relative;
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #d63384;
+    }
+
+    .para {
+      max-width: 90%;
+      font-size: 1.1rem;
+      line-height: 1.7;
+      background: rgba(255, 255, 255, 0.6);
+      padding: 15px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(255, 192, 203, 0.3);
+      z-index: 2;
+    }
+
+    .gif {
+      width: 200px;
+      margin: 20px 0;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+    }
+
+    .btn {
+      background-color: #ff69b4;
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      font-size: 1.1rem;
+      border-radius: 30px;
+      cursor: pointer;
+      margin-top: 20px;
+      z-index: 2;
+      box-shadow: 0 0 10px #ffb6c1;
+    }
+
+    .btn:hover {
+      background-color: #e055a3;
+    }
+
+    #final {
+      display: none;
+      font-size: 1.4rem;
+      color: #c9184a;
+      margin-top: 25px;
+    }
+
+    /* Floating heart background */
+    .hearts {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      height: 100vh;
+      height: 100%;
       overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
     }
 
     .heart {
       position: absolute;
-      font-size: 2rem;
-      cursor: pointer;
-      animation: fall linear;
+      font-size: 1.5rem;
+      animation: float 10s infinite ease-in-out;
+      opacity: 0.4;
     }
 
-    @keyframes fall {
-      0% { top: -10%; }
-      100% { top: 110%; }
-    }
-
-    #scoreBoard {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 1.4rem;
-      background: rgba(0,0,0,0.3);
-      padding: 10px 20px;
-      border-radius: 20px;
-    }
-
-    #message {
-      position: absolute;
-      top: 40%;
-      width: 100%;
-      text-align: center;
-      font-size: 1.6rem;
-      padding: 20px;
-      display: none;
-      animation: fadeIn 2s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    #startBtn {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%,-50%);
-      background-color: #ff69b4;
-      color: white;
-      padding: 15px 30px;
-      font-size: 1.2rem;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      box-shadow: 0 0 15px #fff;
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0.5;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
     }
   </style>
 </head>
 <body>
 
-<div class="game-container" id="game">
-  <div id="scoreBoard">❤️ Score: 0</div>
-  <div id="message"></div>
-  <button id="startBtn" onclick="startGame()">Start Catching Love 💘</button>
+<div class="hearts" id="hearts"></div>
+
+<h1>Hey Beautiful 💕</h1>
+
+<div class="para" id="text">
+  I may not be a poet, but every beat of my heart whispers your name. 💖  
+  You’re not just the girl of my dreams — you are the dream.  
+  Your smile stops time, and your laugh plays like my favorite song.  
+  If love were code, you’d be my infinite loop — and I’d never break out of it.  
+  <br><br>
+  So here I am, no games, no riddles — just me, my feelings, and this one question...
 </div>
 
+<img class="gif" src="https://media.giphy.com/media/l41YkZQDqG2DZ4nXO/giphy.gif" alt="Love GIF" />
+
+<button class="btn" onclick="showFinal()">Start Our Forever 💍</button>
+
+<div id="final">You said yes? 🥹💕 Then let’s make every tomorrow magical, together. 🌙✨</div>
+
 <script>
-  const game = document.getElementById("game");
-  const scoreBoard = document.getElementById("scoreBoard");
-  const message = document.getElementById("message");
-  const emojis = ["💖", "💕", "💘", "❤️", "💓"];
-  let score = 0;
-  let playing = false;
-
-  function createHeart() {
-    if (!playing) return;
-
-    const heart = document.createElement("div");
-    heart.classList.add("heart");
-    heart.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-    heart.style.left = Math.random() * 90 + "vw";
-    heart.style.animationDuration = (3 + Math.random() * 2) + "s";
-
-    heart.onclick = () => {
-      score++;
-      heart.remove();
-      scoreBoard.innerText = `❤️ Score: ${score}`;
-      if (score >= 10) endGame();
-    };
-
-    game.appendChild(heart);
-
-    setTimeout(() => {
-      heart.remove();
-    }, 6000);
+  function showFinal() {
+    document.querySelector('.btn').style.display = 'none';
+    document.getElementById('final').style.display = 'block';
   }
 
-  function startGame() {
-    score = 0;
-    scoreBoard.innerText = "❤️ Score: 0";
-    message.style.display = "none";
-    document.getElementById("startBtn").style.display = "none";
-    playing = true;
+  // Floating hearts generator
+  const hearts = ["💖", "💕", "💘", "❤️", "💓"];
+  const container = document.getElementById("hearts");
 
-    const dropInterval = setInterval(() => {
-      if (!playing) {
-        clearInterval(dropInterval);
-        return;
-      }
-      createHeart();
-    }, 700);
-  }
-
-  function endGame() {
-    playing = false;
-    message.innerHTML = `You caught all my love 🥺💖<br><br>Will you start forever with me? 💍`;
-    message.style.display = "block";
+  for (let i = 0; i < 50; i++) {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.animationDuration = (8 + Math.random() * 6) + "s";
+    h.style.fontSize = (1 + Math.random() * 1.5) + "rem";
+    h.style.animationDelay = Math.random() * 5 + "s";
+    container.appendChild(h);
   }
 </script>
 
