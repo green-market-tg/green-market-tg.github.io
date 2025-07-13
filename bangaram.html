@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Will You Be Mine? 💖</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to top right, #ff9a9e, #fad0c4);
+      font-family: 'Comic Sans MS', cursive;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 3rem;
+      text-align: center;
+      margin-top: 80px;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    .hearts {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .heart {
+      position: absolute;
+      color: #ff6b81;
+      font-size: 2rem;
+      animation: floatHearts 5s linear infinite;
+    }
+
+    @keyframes floatHearts {
+      0% {
+        transform: translateY(100vh) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .proposal-box {
+      max-width: 600px;
+      margin: 100px auto;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      animation: fadeIn 3s ease;
+    }
+
+    .btn-yes {
+      background: #ff5e7e;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.5rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.3s ease, background 0.3s ease;
+      margin-top: 20px;
+    }
+
+    .btn-yes:hover {
+      transform: scale(1.1);
+      background: #ff2d55;
+    }
+
+    .message {
+      font-size: 1.3rem;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hearts" id="hearts"></div>
+
+  <div class="proposal-box">
+    <h1>Hey ❤️</h1>
+    <p class="message">
+      I wrote a little code, not just for fun,<br>
+      But to ask you something that's second to none.<br><br>
+      From JavaScript to HTML, I tried my best,<br>
+      To tell you how I feel — better than the rest 😅<br><br>
+      So here I am, with heart so true,<br>
+      Will you be mine? I choose YOU! 💌
+    </p>
+    <button class="btn-yes" onclick="acceptProposal()">YES 💘</button>
+  </div>
+
+  <script>
+    // Create floating hearts
+    const hearts = document.getElementById("hearts");
+
+    setInterval(() => {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.innerHTML = "❤️";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = 3 + Math.random() * 2 + "s";
+      hearts.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 5000);
+    }, 300);
+
+    // Sweet response on YES
+    function acceptProposal() {
+      document.body.innerHTML = `
+        <div style="text-align:center; margin-top: 100px; color:#fff;">
+          <h1 style="font-size: 4rem;">Yaaay!!! 🥳💖</h1>
+          <p style="font-size: 1.5rem;">You just made this coder the happiest person ever 😭❤️</p>
+          <p style="font-size: 1.2rem;">Let's write the best love story together ✨</p>
+        </div>
+      `;
+    }
+  </script>
+
+</body>
+</html>
