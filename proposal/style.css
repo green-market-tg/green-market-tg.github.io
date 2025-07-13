@@ -1,0 +1,50 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to right, #ff9a9e, #fad0c4);
+  font-family: 'Segoe UI', cursive;
+  color: white;
+  text-align: center;
+  overflow-x: hidden;
+}
+
+.centered {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+button {
+  background-color: #ff6f91;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 40px;
+  font-size: 1.5rem;
+  color: white;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: transform 0.3s;
+}
+
+button:hover {
+  transform: scale(1.1);
+  background-color: #ff3366;
+}
+
+.scroll-page {
+  padding: 50px 20px;
+  background: linear-gradient(to bottom, #fbc2eb, #a6c1ee);
+}
+
+.story-block {
+  font-size: 1.6rem;
+  margin: 100px 0;
+  animation: fadeUp 1.2s ease-in;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
